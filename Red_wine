@@ -1,0 +1,66 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+import seaborn as sns
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.linear_model import SGDClassifier
+from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
+
+data=pd.read_csv('C:\\Users\\Abinaya\\Desktop\\winequality-red.csv')
+data.head()
+
+data.columns
+data.info
+data.isnull().sum()
+
+data['quality'].value_counts()
+data.hist(bins=40, figsize=(12,10), color= 'green')
+
+col=data.columns
+for i in range(len(col)-1):
+    dss=pd.DataFrame((data.groupby('quality')[col[i]].max()-data.groupby('quality')[col[i]].min()).sort_index())
+    sns.barplot(x=dss.index, y=col[i], data=dss)
+    plt.show()
+from sklearn.preprocessing import LabelEncoder
+Enc=LabelEncoder()
+data['quality']=Enc.fit_transform(data['quality'])
+data['quality']
+
+X = data.iloc[:,:-1].values
+y = data.loc[:,"quality"].values
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 0)
+
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+from sklearn.neighbors import KNeighborsClassifier
+knn_class = KNeighborsClassifier(n_neighbors = 4, metric = 'minkowski', p = 2)
+knn_class.fit(X_train, y_train)
+
+y_pred = knn_class.predict(X_test)
+y_pred
+
+
+cm = confusion_matrix(y_test, y_pred_knn)
+print("KNN accuracy: {:2.2f}%" .format(accuracy_score(y_test, y_pred_knn) * 100) )
+
+from sklearn.ensemble import RandomForestClassifier
+rfc_class = RandomForestClassifier(n_estimators=200)
+rfc_class.fit(X_train, y_train)
+
+y_pred_rfc = rfc_class.predict(X_test)
+
+from sklearn.metrics import confusion_matrix, accuracy_score
+cm = confusion_matrix(y_test, y_pred_rfc)
+print("random forest accuracy: {:2.2f}%" .format(accuracy_score(y_test, y_pred_rfc) * 100) )
+
+rfc_eval = cross_val_score(estimator = rfc_class, X = X_train, y = y_train, cv = 5)
+print(rfc_eval.mean()*100)
