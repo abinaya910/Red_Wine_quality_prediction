@@ -10,7 +10,7 @@ from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
 
-data=pd.read_csv('C:\\Users\\Abinaya\\Desktop\\winequality-red.csv')
+data=pd.read_csv('C:\\Users\\Desktop\\winequality-red.csv')
 data.head()
 
 data.columns
